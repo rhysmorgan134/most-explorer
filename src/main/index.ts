@@ -14,6 +14,7 @@ import * as fs from 'fs'
 import * as path from 'node:path'
 import { SourceRecord } from './parsers/JlrTouch'
 import { Settings } from './Types'
+import { _ } from 'lodash'
 
 let most: Most | UsbMost | undefined = undefined
 let mainWindow: BrowserWindow
@@ -61,6 +62,7 @@ if (fs.existsSync(configPath)) {
   console.log('config is: ', config)
 } else {
   console.log('creating config')
+  config = DEFAULT_CONFIG
   fs.writeFileSync(configPath, JSON.stringify(config))
 }
 function createWindow(): void {
@@ -133,6 +135,7 @@ app.whenReady().then(() => {
   ipcMain.handle('getSettings', getSettings)
   ipcMain.handle('saveSettings', saveSettings)
   if (config.usb) {
+    console.log('creating usb')
     most = new UsbMost(mainWindow)
   } else {
     most = new Most(mainWindow, config)
@@ -189,8 +192,16 @@ const saveSettings = (_send, settings: Settings): void => {
   const configPath = app.getPath('userData') + path.sep + 'config.json'
   console.log('saving config')
   fs.writeFileSync(configPath, JSON.stringify(settings))
-  app.relaunch()
-  app.exit()
+  if (config.usb) {
+    if ((_.isEqual(most!.settings), settings)) {
+      console.log(settings.usbSettings)
+      most!.saveSettings(settings.usbSettings)
+    }
+  }
+  if (config.usb != settings.usb) {
+    app.relaunch()
+    app.exit()
+  }
 }
 
 const switchSource = (_send, message: SourceRecord): void => {

@@ -237,19 +237,6 @@ const Home: React.FC = () => {
           <JlrSource />
         </DialogContent>
       </Dialog>
-      <Dialog
-        open={settingsOpen}
-        onClose={(): void => {
-          setSettingsOpen(false)
-        }}
-        // maxWidth={'lg'}
-        // fullWidth={true}
-        PaperProps={{ sx: { minHeight: '80%' } }}
-      >
-        <DialogContent sx={{ minHeight: '80%' }}>
-          <Settings />
-        </DialogContent>
-      </Dialog>
     </Box>
   )
 }

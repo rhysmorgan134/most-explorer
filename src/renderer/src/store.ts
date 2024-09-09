@@ -4,7 +4,8 @@ import { Registry, SelectedFBlock } from '../../resources/GlobalTypes'
 import {
   MostRxMessage,
   SocketMostMessageRx,
-  SocketMostSendMessage
+  SocketMostSendMessage,
+  UsbSettings
 } from 'socketmost/dist/modules/Messages'
 import { Settings } from '../../main/Types'
 
@@ -53,11 +54,7 @@ export interface MostSettings {
   usb: boolean
   manualIp: boolean
   ip: string
-  nodeAddressHigh: number
-  nodeAddressLow: number
-  groupAddress: number
-  autoShutdown: false
-  jlrSwitching: false
+  usbSettings: UsbSettings
 }
 
 export interface MessageStore {
@@ -122,11 +119,35 @@ export const useMostSettings = create<MostSettings>()((set) => ({
   usb: false,
   manualIp: false,
   ip: '',
-  nodeAddressHigh: 0x01,
-  nodeAddressLow: 0x10,
-  groupAddress: 0x22,
-  autoShutdown: false,
-  jlrSwitching: false
+  usbSettings: {
+    version: '',
+    standalone: false,
+    autoShutdown: false,
+    customShutdown: false,
+    auxPower: false,
+    forty8Khz: false,
+    spare3: false,
+    spare4: false,
+    spare5: false,
+    nodeAddressHigh: 0,
+    nodeAddressLow: 0,
+    groupAddress: 0,
+    shutdownTimeDelay: 0,
+    startupTimeDelay: 0,
+    customShutdownMessage: {
+      fblockId: 0,
+      fktId: 0,
+      optype: 0,
+      data: []
+    },
+    amplifier: {
+      fblockId: 0,
+      targetAddressHigh: 0,
+      targetAddressLow: 0,
+      instanceId: 0,
+      sinkNumber: 0
+    }
+  }
 }))
 
 export const useMessageStore = create<MessageStore>((set) => ({
@@ -186,7 +207,12 @@ window['most'].functions((_event, value) => {
   useNetworkStore.setState(() => ({ functions: value }))
 })
 
-window['most'].settingsUpdate((_event, value: Settings) => {
-  useMostSettings.setState(() => value)
+window['most'].settingsUpdate((_event, value: Partial<MostSettings>) => {
+  useMostSettings.setState((state) => ({ ...state, ...value }))
+  console.log(useMostSettings.getState())
+})
+
+window['most'].usbSettings((_event, value: UsbSettings) => {
+  useMostSettings.setState(() => ({ usbSettings: value }))
   console.log(useMostSettings.getState())
 })

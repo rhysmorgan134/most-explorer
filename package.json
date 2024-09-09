@@ -30,10 +30,11 @@
     "@mui/material": "^5.14.9",
     "buffer": "^6.0.3",
     "electron-typescript-ipc": "^3.0.0",
+    "lodash": "^4.17.21",
     "react-router-dom": "^6.16.0",
     "react-window-ui": "^2.2.0",
     "socket.io-client": "^4.7.2",
-    "socketmost": "^3.0.1-alpha.20",
+    "socketmost": "^3.0.1-alpha.29",
     "zustand": "^4.4.1"
   },
   "devDependencies": {

@@ -1,3 +1,5 @@
+import { UsbSettings } from 'socketmost/dist/modules/Messages'
+
 export interface StmSettings {
   nodeAddressHigh: number
   nodeAddressLow: number
@@ -12,9 +14,5 @@ export interface Settings {
   usb: boolean
   manualIp: boolean
   ip: string
-  nodeAddressHigh: number
-  nodeAddressLow: number
-  groupAddress: number
-  autoShutdown: boolean
-  jlrSwitching: boolean
+  usbSettings: UsbSettings
 }

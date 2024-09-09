@@ -1,26 +1,48 @@
 import React, { useEffect, useState } from 'react'
 import Grid from '@mui/material/Unstable_Grid2'
 import { FormControlLabel, Radio, RadioGroup, Switch, TextField, Typography } from '@mui/material'
-import { MacTerminal } from 'react-window-ui'
-import { SocketMostMessageRx } from 'socketmost/dist/modules/Messages'
-import Box from '@mui/material/Box'
 import { useMostSettings } from '../store'
 import Button from '@mui/material/Button'
 import { saveSettings } from '../ipc'
+import UsbSettingsPage from './UsbSettings'
 
 interface Props {}
 
 const Settings: React.FC<Props> = () => {
   const [settings] = useMostSettings((state) => [state])
   const [actualSettings, setActualSettings] = useState({
-    nodeAddressHigh: 0x00,
-    nodeAddressLow: 0x00,
-    groupAddress: 0x00,
     usb: false,
     ip: '',
     manualIp: false,
-    autoShutdown: false,
-    jlrSwitching: false
+    usbSettings: {
+      version: '',
+      standalone: false,
+      autoShutdown: false,
+      customShutdown: false,
+      auxPower: false,
+      forty8Khz: false,
+      spare3: false,
+      spare4: false,
+      spare5: false,
+      nodeAddressHigh: 0,
+      nodeAddressLow: 0,
+      groupAddress: 0,
+      shutdownTimeDelay: 0,
+      startupTimeDelay: 0,
+      customShutdownMessage: {
+        fblockId: 0,
+        fktId: 0,
+        optype: 0,
+        data: []
+      },
+      amplifier: {
+        fblockId: 0,
+        targetAddressHigh: 0,
+        targetAddressLow: 0,
+        instanceId: 0,
+        sinkNumber: 0
+      }
+    }
   })
 
   useEffect(() => {
@@ -33,12 +55,12 @@ const Settings: React.FC<Props> = () => {
 
   const setUsb = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.value === 'true') {
-      setActualSettings({ ...actualSettings, usb: true })
+      setActualSettings({ ...actualSettings, usb: true, manualIp: false })
     } else {
-      setActualSettings({ ...actualSettings, usb: false })
+      setActualSettings({ ...actualSettings, usb: false, manualIp: true })
     }
   }
-
+  //we.tl/t-jqcGhBRmi3
   const setManualIp = (event: React.ChangeEvent<HTMLInputElement>) => {
     setActualSettings({ ...actualSettings, manualIp: event.target.checked })
   }
@@ -60,50 +82,7 @@ const Settings: React.FC<Props> = () => {
       </Grid>
 
       {actualSettings.usb ? (
-        <>
-          <Grid xs={4} sx={{ display: 'flex', justifyContent: 'center' }}>
-            <TextField
-              id="nodeAddrHigh"
-              label="Node Address High"
-              error={parseInt(actualSettings.nodeAddressHigh) ? false : true}
-              value={actualSettings.nodeAddressHigh}
-              helperText={
-                parseInt(actualSettings.nodeAddressHigh) ? '' : 'Enter value as hex or decimal'
-              }
-              onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-                updateSettings('nodeAddressHigh', event.target.value)
-              }}
-            />
-          </Grid>
-          <Grid xs={4} sx={{ display: 'flex', justifyContent: 'center' }}>
-            <TextField
-              id="nodeAddrLow"
-              label="Node Address Low"
-              error={parseInt(actualSettings.nodeAddressLow) ? false : true}
-              value={actualSettings.nodeAddressLow}
-              helperText={
-                parseInt(actualSettings.nodeAddressLow) ? '' : 'Enter value as hex or decimal'
-              }
-              onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-                updateSettings('nodeAddressLow', event.target.value)
-              }}
-            />
-          </Grid>
-          <Grid xs={4} sx={{ display: 'flex', justifyContent: 'center' }}>
-            <TextField
-              id="groupAddr"
-              label="Group Address"
-              error={parseInt(actualSettings.groupAddress) ? false : true}
-              value={actualSettings.groupAddress}
-              helperText={
-                parseInt(actualSettings.groupAddress) ? '' : 'Enter value as hex or decimal'
-              }
-              onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-                updateSettings('groupAddress', event.target.value)
-              }}
-            />
-          </Grid>
-        </>
+        <UsbSettingsPage actualSettings={actualSettings} setActualSettings={setActualSettings} />
       ) : (
         <>
           <Grid xs={4} sx={{ display: 'flex', justifyContent: 'center' }}>

@@ -10,7 +10,8 @@ import {
   RetrieveAudio,
   SocketMostSendMessage,
   Source,
-  Stream
+  Stream,
+  UsbSettings
 } from 'socketmost/dist/modules/Messages'
 import { JlrAudioControl } from 'socketmost'
 import { SourceRecord } from './parsers/JlrTouch'
@@ -23,6 +24,7 @@ export class UsbMost extends EventEmitter {
   appState: number
   address: null | string
   audio: JlrAudioControl
+  settings?: UsbSettings
   constructor(win: BrowserWindow) {
     super()
     this.socketMost = new SocketMostUsb()
@@ -35,6 +37,9 @@ export class UsbMost extends EventEmitter {
     this.audio = new JlrAudioControl(this.socketMost)
     this.socketMost.on('opened', () => {
       this.updateAppState(AppState.connectingToSocket)
+      setTimeout(() => {
+        this.socketMost.getSettings()
+      }, 100)
     })
 
     this.socketMost.on('error', () => {
@@ -62,6 +67,12 @@ export class UsbMost extends EventEmitter {
         const messageOut: IoMostRx = { ...message, data: [...message.data] }
         this.win?.webContents.send('newMessage', messageOut)
       }
+    })
+
+    this.socketMost.on(Os8104Events.Settings, (message: UsbSettings) => {
+      console.log('update in interface', message)
+      this.settings = message
+      this.win?.webContents.send('usbSettings', message)
     })
 
     this.parser.on('registryComplete', (registry) => {
@@ -119,5 +130,9 @@ export class UsbMost extends EventEmitter {
 
   switchSource(message: SourceRecord): void {
     this.audio.switchSource(message)
+  }
+
+  saveSettings(settings: UsbSettings): void {
+    this.socketMost.saveSettings(settings)
   }
 }

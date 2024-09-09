@@ -4,7 +4,8 @@ import {
   RetrieveAudio,
   SocketMostSendMessage,
   Source,
-  Stream
+  Stream,
+  UsbSettings
 } from 'socketmost/dist/modules/Messages'
 import { SourceRecord } from '../main/parsers/JlrTouch'
 import { Settings } from '../main/Types'
@@ -36,7 +37,8 @@ if (process.contextIsolated) {
       switchSource: (data: SourceRecord) => ipcRenderer.invoke('switchSource', data),
       settingsUpdate: (callback) => ipcRenderer.on('settingsUpdate', callback),
       getSettings: () => ipcRenderer.invoke('getSettings'),
-      saveSettings: (settings: Settings) => ipcRenderer.invoke('saveSettings', settings)
+      saveSettings: (settings: Settings) => ipcRenderer.invoke('saveSettings', settings),
+      usbSettings: (settings: UsbSettings) => ipcRenderer.on('usbSettings', settings)
     })
   } catch (error) {
     console.error(error)
