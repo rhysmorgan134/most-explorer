@@ -15,6 +15,7 @@ import * as path from 'node:path'
 import { SourceRecord } from './parsers/JlrTouch'
 import { Settings } from './Types'
 import { _ } from 'lodash'
+import { JlrAudioControl } from 'socketmost'
 
 let most: Most | UsbMost | undefined = undefined
 let mainWindow: BrowserWindow

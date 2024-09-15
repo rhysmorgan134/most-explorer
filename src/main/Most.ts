@@ -15,6 +15,8 @@ import { ErrorParser } from './utils/ErrorParser'
 import { Parser } from './utils/MessageParser'
 import { AppState, IoMostRx } from '../resources/GlobalTypes'
 import { Settings } from './Types'
+import { JlrAudioControl } from 'socketmost'
+import { SourceRecord } from './parsers/JlrTouch'
 
 export class Most extends EventEmitter {
   socket?: IoSocket
@@ -25,12 +27,14 @@ export class Most extends EventEmitter {
   appState: number
   settings: Settings
   address: null | string
+  audio?: JlrAudioControl
 
   constructor(win: BrowserWindow, settings: Settings) {
     super()
     this.parser = new Parser()
     this.win = win
     this.address = null
+
     this.errorParser = new ErrorParser()
     this.appState = AppState.loading
     this.settings = settings
@@ -65,6 +69,7 @@ export class Most extends EventEmitter {
 
   createSocketIo(address): void {
     this.socket = io(`ws://${address}:5556`)
+    this.audio = new JlrAudioControl(this.socket)
     this.updateAppState(AppState.waitingForServer)
     this.socket.on('message', (message: SocketMostMessageRx) => {
       if (message.opType === 0x0f) {
@@ -144,5 +149,9 @@ export class Most extends EventEmitter {
 
   disconnectSource(data: Source): void {
     this.socket?.emit('disconnectSource', data)
+  }
+
+  switchSource(message: SourceRecord): void {
+    this.audio!.switchSource(message)
   }
 }

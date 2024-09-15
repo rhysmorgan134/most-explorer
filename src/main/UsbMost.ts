@@ -34,7 +34,7 @@ export class UsbMost extends EventEmitter {
     this.errorParser = new ErrorParser()
     this.appState = AppState.loading
     this.updateAppState(this.appState)
-    this.audio = new JlrAudioControl(this.socketMost)
+    //this.audio = new JlrAudioControl(this.socketMost)
     this.socketMost.on('opened', () => {
       this.updateAppState(AppState.connectingToSocket)
       setTimeout(() => {
@@ -63,7 +63,7 @@ export class UsbMost extends EventEmitter {
           case 0:
             message.fBlockID > 1 ? this.parser.parseMessage(message, message.fktID) : null
         }
-        this.audio.parseMessage(message)
+        // this.audio.parseMessage(message)
         const messageOut: IoMostRx = { ...message, data: [...message.data] }
         this.win?.webContents.send('newMessage', messageOut)
       }
