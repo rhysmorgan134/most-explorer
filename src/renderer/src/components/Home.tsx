@@ -56,7 +56,9 @@ const Home: React.FC = () => {
     sourceOpen,
     setSourceOpen,
     settingsOpen,
-    setSettingsOpen
+    setSettingsOpen,
+    fBlockModalOpen,
+    setFBlockModalOpen,
   ] = useStatusStore((state) => [
     state.fBlock,
     state.clearFBlock,
@@ -67,7 +69,9 @@ const Home: React.FC = () => {
     state.sourceOpen,
     state.setSourceOpen,
     state.settingsOpen,
-    state.setSettingsOpen
+    state.setSettingsOpen,
+    state.fBlockModalOpen,
+    state.setFBlockModalOpen,
   ])
   const [clearFunctions] = useNetworkStore((state: NetworkStore) => [state.clearFunctions])
   const [logName, setlogName] = useState('')
@@ -185,10 +189,11 @@ const Home: React.FC = () => {
         </Grid>
       </Box>
       <Dialog
-        open={fBlock !== undefined}
+        open={fBlockModalOpen}
         onClose={(): void => {
           clearFBlock()
           clearFunctions()
+          setFBlockModalOpen(false)
         }}
         maxWidth={'lg'}
         fullWidth={true}

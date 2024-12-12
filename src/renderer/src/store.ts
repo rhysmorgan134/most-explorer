@@ -40,14 +40,18 @@ export interface StatusStore {
   manualOpen: boolean
   sourceOpen: boolean
   settingsOpen: boolean
+  fBlockModalOpen: boolean
   fBlock?: SelectedFBlock
+  subscribedDevices: string[]
   setOpen: (open: boolean) => void
-  setFBlock: (fBlockID: FBlock) => void
+  setFBlock: (fBlockID: FBlock, callback?: (data: SelectedFBlock) => void) => void
   clearFBlock: () => void
   setRetrieveAudioModal: (open: boolean) => void
   setManualAll: (open: boolean) => void
   setSourceOpen: (open: boolean) => void
   setSettingsOpen: (open: boolean) => void
+  setFBlockModalOpen: (open: boolean) => void
+  toggleDeviceSubscription: (id: string) => void
 }
 
 export interface MostSettings {
@@ -78,8 +82,10 @@ export const useStatusStore = create<StatusStore>()((set) => ({
   manualOpen: false,
   sourceOpen: false,
   settingsOpen: false,
+  fBlockModalOpen: false,
+  subscribedDevices: [],
   setOpen: (open): void => set(() => ({ open: open })),
-  setFBlock: (fBlock): void =>
+  setFBlock: (fBlock: FBlock, callback?: (data: SelectedFBlock) => void): void =>
     set(() => {
       const addrBuffer = Buffer.alloc(2)
       addrBuffer.writeUInt16BE(fBlock.targetAddress)
@@ -89,13 +95,27 @@ export const useStatusStore = create<StatusStore>()((set) => ({
         fBlockID: fBlock.fBlockID,
         instanceID: fBlock.instanceID
       }
+      if (callback) {
+        callback(data) // optionally return the selected FBlock
+      }
       return { fBlock: data }
     }),
   clearFBlock: (): void => set(() => ({ fBlock: undefined })),
   setRetrieveAudioModal: (open): void => set(() => ({ retrieveAudioModal: open })),
   setManualAll: (open): void => set(() => ({ manualOpen: open })),
   setSourceOpen: (open): void => set(() => ({ sourceOpen: open })),
-  setSettingsOpen: (open): void => set(() => ({ settingsOpen: open }))
+  setSettingsOpen: (open): void => set(() => ({ settingsOpen: open })),
+  setFBlockModalOpen: (open): void => set(() => ({ fBlockModalOpen: open })),
+  toggleDeviceSubscription: (id: string): void => {
+    set((state) => {
+      const isSubscribed = state.subscribedDevices.includes(id);
+      const updatedSubscribedDevices = isSubscribed
+        ? state.subscribedDevices.filter((deviceId) => deviceId !== id)
+        : [...state.subscribedDevices, id];
+
+      return { subscribedDevices: updatedSubscribedDevices };
+    });
+  }
 }))
 
 export const useLogStore = create<LogStore>()((set) => ({

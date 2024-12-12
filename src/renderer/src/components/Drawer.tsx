@@ -1,18 +1,26 @@
 import * as React from 'react'
 import { styled, useTheme } from '@mui/material/styles'
-import Drawer from '@mui/material/Drawer'
-import MuiAppBar from '@mui/material/AppBar'
-import List from '@mui/material/List'
-import Divider from '@mui/material/Divider'
-import IconButton from '@mui/material/IconButton'
-import ChevronLeftIcon from '@mui/icons-material/ChevronLeft'
-import ChevronRightIcon from '@mui/icons-material/ChevronRight'
-import ListItem from '@mui/material/ListItem'
-import ListItemButton from '@mui/material/ListItemButton'
-import ListItemText from '@mui/material/ListItemText'
 import { StatusStore, useNetworkStore, useStatusStore } from '../store'
-import { ListSubheader } from '@mui/material'
 import { Registry } from '../../../resources/GlobalTypes'
+import { sendMessage } from '@renderer/ipc'
+import { SocketMostSendMessage } from 'socketmost/dist/modules/Messages'
+import {
+  Drawer,
+  AppBar as MuiAppBar,
+  List,
+  Divider,
+  IconButton,
+  ListItem,
+  ListItemButton,
+  ListItemText,
+  ListSubheader
+} from '@mui/material'
+import {
+  ChevronLeft as ChevronLeftIcon,
+  ChevronRight as ChevronRightIcon,
+  NotificationAdd as NotificationAddIcon,
+  NotificationsOff as NotificationsOffIcon
+} from '@mui/icons-material'
 
 const drawerWidth = 240
 
@@ -69,16 +77,57 @@ const DrawerHeader = styled('div')(({ theme }) => ({
 
 const PersistentDrawerLeft: React.FC = () => {
   const theme = useTheme()
-  const [open, setOpen, setFBlock] = useStatusStore((state: StatusStore) => [
+  const [
+    open,
+    setOpen,
+    setFBlock,
+    setFBlockModalOpen,
+    toggleDeviceSubscription,
+    subscribedDevices
+  ] = useStatusStore((state: StatusStore) => [
     state.open,
     state.setOpen,
-    state.setFBlock
+    state.setFBlock,
+    state.setFBlockModalOpen,
+    state.toggleDeviceSubscription,
+    state.subscribedDevices,
   ])
   const registry: Registry = useNetworkStore((state) => state.registry)
-
   const handleDrawerClose = (): void => {
     setOpen(false)
   }
+
+  const handleSubscription = (text2: any, text: string, isSubscribed: boolean): void => {
+    const id = `${text}_${text2.address}_${text2.instanceID}`
+  
+    setFBlock(
+      {
+        targetAddress: text2.address,
+        fBlock: text,
+        instanceID: text2.instanceID,
+        fBlockID: text2.fBlockID,
+      },
+      (fBlock) => {
+        if (!fBlock) {
+          console.error('no fBlock set');
+          return;
+        }
+
+        const message: SocketMostSendMessage = {
+          targetAddressHigh: fBlock.targetAddressHigh,
+          targetAddressLow: fBlock.targetAddressLow,
+          fBlockID: fBlock.fBlockID,
+          instanceID: fBlock.instanceID,
+          fktID: 0x001,
+          opType: 0x00, // Set
+          data: isSubscribed ? [0x02, 0x01, 0x10] : [0x00, 0x01, 0x10], // TODO: remove hardcoded pimost address?
+        };
+
+        sendMessage(message);
+        toggleDeviceSubscription(id);
+      },
+    );
+  };
 
   return (
     <Drawer
@@ -110,26 +159,42 @@ const PersistentDrawerLeft: React.FC = () => {
             </ListSubheader>
           }
         >
-          {registry[text].map((text2) => (
-            <ListItem key={text + '_' + text2.address + '_' + text2.instanceID} disablePadding>
-              <ListItemButton>
-                <ListItemText
-                  primary={`Addr: 0x${text2.address.toString(16)} inst: 0x${text2.instanceID.toString(
-                    16
-                  )}`}
+          {registry[text].map((text2) => {
+            const id = `${text}_${text2.address}_${text2.instanceID}`
+            const isSubscribed = subscribedDevices.includes(id)
+
+            return (
+              <ListItem key={id} disablePadding>
+                <ListItemButton>
+                  <ListItemText
+                    primary={`Addr: 0x${text2.address.toString(16)} inst: 0x${text2.instanceID.toString(
+                      16
+                    )}`}
+                    onClick={(): void => {
+                      setFBlock({
+                        targetAddress: text2.address,
+                        fBlock: text,
+                        instanceID: text2.instanceID,
+                        fBlockID: text2.fBlockID
+                      })
+                      setOpen(false)
+                      setFBlockModalOpen(true)
+                    }}
+                  />
+                </ListItemButton>
+                <IconButton
                   onClick={(): void => {
-                    setFBlock({
-                      targetAddress: text2.address,
-                      fBlock: text,
-                      instanceID: text2.instanceID,
-                      fBlockID: text2.fBlockID
-                    })
-                    setOpen(false)
+                    handleSubscription(text2, text, isSubscribed)
                   }}
-                />
-              </ListItemButton>
-            </ListItem>
-          ))}
+                  // sx={{
+                  //   color: isSubscribed ? 'green' : 'default',
+                  // }}
+                >
+                  {isSubscribed ? <NotificationsOffIcon /> : <NotificationAddIcon />}
+                </IconButton>
+              </ListItem>
+            )
+          })}
         </List>
       ))}
     </Drawer>

@@ -10,6 +10,7 @@ import Stream from './Stream'
 import { PartialSendMessage } from "../../../resources/GlobalTypes";
 import SourceConnect from "./SourceConnect";
 import SourceDisconnect from "./SourceDisconnect";
+import { SocketMostSendMessage } from 'socketmost/dist/modules/Messages';
 
 const opTypes = {
   0x00: 'Set',
@@ -55,6 +56,7 @@ const ManualMessage: React.FC<Props> = ({ fBlock }) => {
   const [stream, setStream] = useState(false)
   const [sourceEntry, setSourceEntry] = useState(false)
   const [sourceDisc, setSourceDisc] = useState(false)
+
   console.log(fBlock)
   const renderOpTypes = (): React.ReactElement[] => {
     return Object.keys(opTypes).map((key, index) => {
