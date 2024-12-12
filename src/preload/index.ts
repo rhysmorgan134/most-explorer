@@ -38,7 +38,8 @@ if (process.contextIsolated) {
       settingsUpdate: (callback) => ipcRenderer.on('settingsUpdate', callback),
       getSettings: () => ipcRenderer.invoke('getSettings'),
       saveSettings: (settings: Settings) => ipcRenderer.invoke('saveSettings', settings),
-      usbSettings: (settings: UsbSettings) => ipcRenderer.on('usbSettings', settings)
+      usbSettings: (settings: UsbSettings) => ipcRenderer.on('usbSettings', settings),
+      bootToDFU: () => ipcRenderer.invoke('bootToDFU')
     })
   } catch (error) {
     console.error(error)

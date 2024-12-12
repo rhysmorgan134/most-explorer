@@ -146,6 +146,13 @@ export const useMostSettings = create<MostSettings>()((set) => ({
       targetAddressLow: 0,
       instanceId: 0,
       sinkNumber: 0
+    },
+    microphone: {
+      fblockId: 0,
+      targetAddressHigh: 0,
+      targetAddressLow: 0,
+      instanceId: 0,
+      sinkNumber: 0
     }
   }
 }))

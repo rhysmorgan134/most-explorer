@@ -63,7 +63,7 @@ export class UsbMost extends EventEmitter {
           case 0:
             message.fBlockID > 1 ? this.parser.parseMessage(message, message.fktID) : null
         }
-        // this.audio.parseMessage(message)
+        //this.audio.parseMessage(message)
         const messageOut: IoMostRx = { ...message, data: [...message.data] }
         this.win?.webContents.send('newMessage', messageOut)
       }
@@ -134,5 +134,10 @@ export class UsbMost extends EventEmitter {
 
   saveSettings(settings: UsbSettings): void {
     this.socketMost.saveSettings(settings)
+  }
+
+  bootToDFU(): void {
+    console.log('booting to dfu')
+    this.socketMost.bootToDFU()
   }
 }

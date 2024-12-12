@@ -85,6 +85,27 @@ function createWindow(): void {
     mainWindow.show()
   })
 
+  mainWindow.webContents.session.setPermissionCheckHandler(() => {
+    return true
+  })
+
+  mainWindow.webContents.session.setDevicePermissionHandler((details) => {
+    if (details.device.vendorId === 0x0483) {
+      return true
+    } else {
+      return false
+    }
+  })
+
+  mainWindow.webContents.session.on('select-usb-device', (event, details, callback) => {
+    event.preventDefault()
+    const selectedDevice = details.deviceList.find((device) => {
+      return device.vendorId === 0x0483
+    })
+
+    callback(selectedDevice?.deviceId)
+  })
+
   mainWindow.webContents.setWindowOpenHandler((details) => {
     shell.openExternal(details.url)
     return { action: 'deny' }
@@ -123,6 +144,14 @@ app.whenReady().then(() => {
     if (BrowserWindow.getAllWindows().length === 0) createWindow()
   })
 
+  if (true) {
+    //config.usb) {
+    console.log('creating usb')
+    most = new UsbMost(mainWindow)
+  } else {
+    most = new Most(mainWindow, config)
+  }
+
   ipcMain.handle('requestRegistry', getRegistry)
   ipcMain.handle('getSource', getSource)
   ipcMain.handle('sendMessage', sendMessage)
@@ -135,16 +164,15 @@ app.whenReady().then(() => {
   ipcMain.handle('switchSource', switchSource)
   ipcMain.handle('getSettings', getSettings)
   ipcMain.handle('saveSettings', saveSettings)
-  if (config.usb) {
-    console.log('creating usb')
-    most = new UsbMost(mainWindow)
-  } else {
-    most = new Most(mainWindow, config)
-  }
+  ipcMain.handle('bootToDFU', bootToDFU)
 })
 
 const getRegistry = (): void => {
   most?.getRegistry()
+}
+
+const bootToDFU = (): void => {
+  most?.bootToDFU()
 }
 
 const getSource = (): void => {

@@ -36,6 +36,12 @@ export const getAppState = (): void => {
 }
 
 export const saveSettings = (settings: Settings): void => {
+  settings.usbSettings.customShutdownMessage = {
+    data: [4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
+    fblockId: 1,
+    fktId: 2,
+    optype: 3
+  }
   window['most'].saveSettings(settings)
 }
 
@@ -56,4 +62,8 @@ export const disconnectSource = (data: Source): void => {
 
 export const switchSource = (data: SourceRecord): void => {
   window['most'].switchSource(data)
+}
+
+export const bootToDFU = (): void => {
+  window['most'].bootToDFU()
 }

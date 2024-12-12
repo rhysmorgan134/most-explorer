@@ -69,7 +69,7 @@ export class Most extends EventEmitter {
 
   createSocketIo(address): void {
     this.socket = io(`ws://${address}:5556`)
-    this.audio = new JlrAudioControl(this.socket)
+    // this.audio = new JlrAudioControl(this.socket)
     this.updateAppState(AppState.waitingForServer)
     this.socket.on('message', (message: SocketMostMessageRx) => {
       if (message.opType === 0x0f) {

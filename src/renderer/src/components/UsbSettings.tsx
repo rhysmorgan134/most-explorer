@@ -2,15 +2,25 @@ import React, { useEffect, useState } from 'react'
 import Grid from '@mui/material/Unstable_Grid2'
 import {
   Chip,
+  FormControl,
   FormControlLabel,
+  InputLabel,
+  MenuItem,
   Radio,
   RadioGroup,
+  Select,
+  SelectChangeEvent,
   Switch,
   TextField,
   Typography
 } from '@mui/material'
 import { useMostSettings } from '../store'
 import { UsbSettings } from 'socketmost/dist/modules/Messages'
+import Button from '@mui/material/Button'
+import { bootToDFU } from '../ipc'
+import stm32dfu from 'stm32dfu'
+import StandaloneSettings from './StandaloneSettings'
+import StandaloneSettingsMic from './StandaloneSettingsMic'
 
 interface Props {
   actualSettings: any
@@ -18,48 +28,19 @@ interface Props {
 }
 
 const UsbSettingsPage: React.FC<Props> = ({ actualSettings, setActualSettings }) => {
-  // const [settings] = useMostSettings((state) => [state])
-  // const [actualSettings, setActualSettings] = useState({
-  //   usb: false,
-  //   ip: '',
-  //   usbSettings: {
-  //     version: '',
-  //     standalone: false,
-  //     autoShutdown: false,
-  //     customShutdown: false,
-  //     auxPower: false,
-  //     forty8Khz: false,
-  //     spare3: false,
-  //     spare4: false,
-  //     spare5: false,
-  //     nodeAddressHigh: 0,
-  //     nodeAddressLow: 0,
-  //     groupAddress: 0,
-  //     shutdownTimeDelay: 0,
-  //     startupTimeDelay: 0,
-  //     customShutdownMessage: {
-  //       fblockId: 0,
-  //       fktId: 0,
-  //       optype: 0,
-  //       data: []
-  //     },
-  //     amplifier: {
-  //       fblockId: 0,
-  //       targetAddressHigh: 0,
-  //       targetAddressLow: 0,
-  //       instanceId: 0,
-  //       sinkNumber: 0
-  //     }
-  //   }
-  // })
-
-  // useEffect(() => {
-  //   setActualSettings(settings)
-  // }, [settings])
+  const [dfuDevices, setDfuDevices] = React.useState([])
 
   const updateSettings = (key, value) => {
     setActualSettings({ ...actualSettings, [key]: value })
   }
+
+  useEffect(() => {
+    setInterval(() => {
+      console.log('finding devices')
+      let deviceSettings = stm32dfu.findAllStm32Device(0x0483)
+      console.log(deviceSettings)
+    }, 1000)
+  }, [])
 
   const updateUsbSettings = (
     key: keyof UsbSettings,
@@ -73,9 +54,38 @@ const UsbSettingsPage: React.FC<Props> = ({ actualSettings, setActualSettings })
   }
   //we.tl/t-jqcGhBRmi3
 
+  const setAmplifierSettings = (settings) => {
+    setActualSettings({
+      ...actualSettings,
+      usbSettings: {
+        ...actualSettings.usbSettings,
+        amplifier: {
+          ...actualSettings.usbSettings.amplifier,
+          ...settings
+        }
+      }
+    })
+    console.log(actualSettings)
+  }
+
+  const setMicrophoneSettings = (settings) => {
+    setActualSettings({
+      ...actualSettings,
+      usbSettings: {
+        ...actualSettings.usbSettings,
+        microphone: {
+          ...actualSettings.usbSettings.microphone,
+          ...settings
+        }
+      }
+    })
+    console.log(actualSettings)
+  }
+
   console.log('settings in view', actualSettings)
   return (
     <>
+      <>{dfuDevices}</>
       <Grid xs={12} sx={{ display: 'flex', justifyContent: 'center' }}>
         <Chip label={'FW Version:  ' + actualSettings.usbSettings.version} variant="outlined" />
       </Grid>
@@ -139,7 +149,7 @@ const UsbSettingsPage: React.FC<Props> = ({ actualSettings, setActualSettings })
           label={'Auto Shutdown'}
         />
       </Grid>
-      <Grid xs={4} sx={{ display: 'flex', justifyContent: 'center' }}>
+      <Grid xs={4} sx={{ display: 'none', justifyContent: 'center' }}>
         <FormControlLabel
           control={
             <Switch
@@ -167,7 +177,7 @@ const UsbSettingsPage: React.FC<Props> = ({ actualSettings, setActualSettings })
           label={'Aux Power'}
         />
       </Grid>
-      <Grid xs={4} sx={{ display: 'flex', justifyContent: 'center' }}>
+      <Grid xs={4} sx={{ display: 'none', justifyContent: 'center' }}>
         <FormControlLabel
           control={
             <Switch
@@ -214,6 +224,23 @@ const UsbSettingsPage: React.FC<Props> = ({ actualSettings, setActualSettings })
             updateUsbSettings('startupTimeDelay', event.target.value)
           }}
         />
+      </Grid>
+      {actualSettings.usbSettings.standalone ? (
+        <>
+          <StandaloneSettings
+            setAmplifierSettings={setAmplifierSettings}
+            amplifierSettings={actualSettings.usbSettings.amplifier}
+          />
+          <StandaloneSettingsMic
+            setMicrophoneSettings={setMicrophoneSettings}
+            microphoneSettings={actualSettings.usbSettings.microphone}
+          />
+        </>
+      ) : (
+        <></>
+      )}
+      <Grid xs={4} sx={{ display: 'none', justifyContent: 'center' }}>
+        <Button onClick={() => bootToDFU()}>Boot To DFU</Button>
       </Grid>
     </>
   )
