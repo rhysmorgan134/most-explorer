@@ -16,6 +16,7 @@ import PersistentDrawerLeft from './components/Drawer'
 import { Registry } from '../../resources/GlobalTypes'
 import { getAppState, reqSettings } from './ipc'
 import Settings from './components/Settings'
+import Firmware from './components/Firmware'
 
 const ColorModeContext = React.createContext({ toggleColorMode: () => {} })
 
@@ -35,9 +36,11 @@ export default function App(): JSX.Element {
   const [mode, setMode] = React.useState('dark')
   const appStatus = useStatusStore((state) => state['appStatus'])
   const registry: Registry = useNetworkStore((state) => state['registry'])
-  const [settingsOpen, setSettingsOpen] = useStatusStore((state) => [
+  const [settingsOpen, setSettingsOpen, firmwareOpen, setFirmwareOpen] = useStatusStore((state) => [
     state.settingsOpen,
-    state.setSettingsOpen
+    state.setSettingsOpen,
+    state.firmwareOpen,
+    state.setFirmwareOpen
   ])
   const colorMode = React.useMemo(
     () => ({
@@ -123,6 +126,19 @@ export default function App(): JSX.Element {
         >
           <DialogContent>
             <Settings />
+          </DialogContent>
+        </Dialog>
+        <Dialog
+          open={firmwareOpen}
+          onClose={(): void => {
+            setFirmwareOpen(false)
+          }}
+          maxWidth={'lg'}
+          fullWidth={true}
+          sx={{ minHeight: '50%' }}
+        >
+          <DialogContent>
+            <Firmware />
           </DialogContent>
         </Dialog>
       </ThemeProvider>

@@ -40,6 +40,7 @@ export interface StatusStore {
   manualOpen: boolean
   sourceOpen: boolean
   settingsOpen: boolean
+  firmwareOpen: boolean
   fBlock?: SelectedFBlock
   setOpen: (open: boolean) => void
   setFBlock: (fBlockID: FBlock) => void
@@ -48,6 +49,7 @@ export interface StatusStore {
   setManualAll: (open: boolean) => void
   setSourceOpen: (open: boolean) => void
   setSettingsOpen: (open: boolean) => void
+  setFirmwareOpen: (open: boolean) => void
 }
 
 export interface MostSettings {
@@ -78,6 +80,7 @@ export const useStatusStore = create<StatusStore>()((set) => ({
   manualOpen: false,
   sourceOpen: false,
   settingsOpen: false,
+  firmwareOpen: false,
   setOpen: (open): void => set(() => ({ open: open })),
   setFBlock: (fBlock): void =>
     set(() => {
@@ -95,7 +98,8 @@ export const useStatusStore = create<StatusStore>()((set) => ({
   setRetrieveAudioModal: (open): void => set(() => ({ retrieveAudioModal: open })),
   setManualAll: (open): void => set(() => ({ manualOpen: open })),
   setSourceOpen: (open): void => set(() => ({ sourceOpen: open })),
-  setSettingsOpen: (open): void => set(() => ({ settingsOpen: open }))
+  setSettingsOpen: (open): void => set(() => ({ settingsOpen: open })),
+  setFirmwareOpen: (open): void => set(() => ({ firmwareOpen: open }))
 }))
 
 export const useLogStore = create<LogStore>()((set) => ({

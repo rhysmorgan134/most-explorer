@@ -67,3 +67,7 @@ export const switchSource = (data: SourceRecord): void => {
 export const bootToDFU = (): void => {
   window['most'].bootToDFU()
 }
+
+export const forceSwitch = (): void => {
+  window['most'].forceSwitch()
+}

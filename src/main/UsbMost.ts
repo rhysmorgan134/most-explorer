@@ -132,6 +132,10 @@ export class UsbMost extends EventEmitter {
     this.audio.switchSource(message)
   }
 
+  forceSwitch(): void {
+    this.socketMost.forceSwitch()
+  }
+
   saveSettings(settings: UsbSettings): void {
     this.socketMost.saveSettings(settings)
   }

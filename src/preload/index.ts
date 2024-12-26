@@ -39,7 +39,8 @@ if (process.contextIsolated) {
       getSettings: () => ipcRenderer.invoke('getSettings'),
       saveSettings: (settings: Settings) => ipcRenderer.invoke('saveSettings', settings),
       usbSettings: (settings: UsbSettings) => ipcRenderer.on('usbSettings', settings),
-      bootToDFU: () => ipcRenderer.invoke('bootToDFU')
+      bootToDFU: () => ipcRenderer.invoke('bootToDFU'),
+      forceSwitch: () => ipcRenderer.invoke('forceSwitch')
     })
   } catch (error) {
     console.error(error)

@@ -42,7 +42,7 @@ const checkConfigVersion = (
   Object.keys(DEFAULT_CONFIG).forEach((key) => {
     if (!Object.keys(config).includes(key)) {
       console.log(`config out of date, setting defaults`)
-      // @ts-ignore
+      // @ts-ignore unsure why
       config[key] = DEFAULT_CONFIG[key]
       modified = true
     }
@@ -165,6 +165,7 @@ app.whenReady().then(() => {
   ipcMain.handle('getSettings', getSettings)
   ipcMain.handle('saveSettings', saveSettings)
   ipcMain.handle('bootToDFU', bootToDFU)
+  ipcMain.handle('forceSwitch', forceSwitch)
 })
 
 const getRegistry = (): void => {
@@ -207,6 +208,10 @@ const connectSource = (_sender, message: Source): void => {
 const disconnectSource = (_send, message: Source): void => {
   console.log('disconnecting source')
   most?.disconnectSource(message)
+}
+
+const forceSwitch = (): void => {
+  most?.forceSwitch()
 }
 
 const getAppStatus = (): void => {

@@ -1,20 +1,6 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect } from 'react'
 import Grid from '@mui/material/Unstable_Grid2'
-import {
-  Chip,
-  FormControl,
-  FormControlLabel,
-  InputLabel,
-  MenuItem,
-  Radio,
-  RadioGroup,
-  Select,
-  SelectChangeEvent,
-  Switch,
-  TextField,
-  Typography
-} from '@mui/material'
-import { useMostSettings } from '../store'
+import { Chip, FormControlLabel, Switch, TextField } from '@mui/material'
 import { UsbSettings } from 'socketmost/dist/modules/Messages'
 import Button from '@mui/material/Button'
 import { bootToDFU } from '../ipc'
@@ -28,19 +14,9 @@ interface Props {
 }
 
 const UsbSettingsPage: React.FC<Props> = ({ actualSettings, setActualSettings }) => {
-  const [dfuDevices, setDfuDevices] = React.useState([])
-
   const updateSettings = (key, value) => {
     setActualSettings({ ...actualSettings, [key]: value })
   }
-
-  useEffect(() => {
-    setInterval(() => {
-      console.log('finding devices')
-      let deviceSettings = stm32dfu.findAllStm32Device(0x0483)
-      console.log(deviceSettings)
-    }, 1000)
-  }, [])
 
   const updateUsbSettings = (
     key: keyof UsbSettings,
@@ -85,7 +61,6 @@ const UsbSettingsPage: React.FC<Props> = ({ actualSettings, setActualSettings })
   console.log('settings in view', actualSettings)
   return (
     <>
-      <>{dfuDevices}</>
       <Grid xs={12} sx={{ display: 'flex', justifyContent: 'center' }}>
         <Chip label={'FW Version:  ' + actualSettings.usbSettings.version} variant="outlined" />
       </Grid>
@@ -189,6 +164,20 @@ const UsbSettingsPage: React.FC<Props> = ({ actualSettings, setActualSettings })
             />
           }
           label={'48Khz'}
+        />
+      </Grid>
+      <Grid xs={4} sx={{ display: 'flex', justifyContent: 'center' }}>
+        <FormControlLabel
+          control={
+            <Switch
+              id="debug"
+              checked={actualSettings.usbSettings.debug ? true : false}
+              onChange={(event: React.ChangeEvent<HTMLInputElement>): void => {
+                updateUsbSettings('debug', event.target.checked ? 1 : 0)
+              }}
+            />
+          }
+          label={'debug'}
         />
       </Grid>
       <Grid xs={4} sx={{ display: 'flex', justifyContent: 'center' }}>

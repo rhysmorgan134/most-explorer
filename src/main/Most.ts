@@ -154,4 +154,12 @@ export class Most extends EventEmitter {
   switchSource(message: SourceRecord): void {
     this.audio!.switchSource(message)
   }
+
+  forceSwitch(): void {
+    console.log('force switch not implemented in HAT version yet....')
+  }
+
+  bootToDFU = (): void => {
+    console.log('boot to dfu not available in HAT version')
+  }
 }

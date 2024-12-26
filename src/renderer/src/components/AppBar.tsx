@@ -12,9 +12,12 @@ import Brightness7Icon from '@mui/icons-material/Brightness7'
 import MenuIcon from '@mui/icons-material/Menu'
 import SendIcon from '@mui/icons-material/Send'
 import InputIcon from '@mui/icons-material/Input'
+import AudiotrackIcon from '@mui/icons-material/Audiotrack'
 import SettingsIcon from '@mui/icons-material/Settings'
+import SystemUpdateAltIcon from '@mui/icons-material/SystemUpdateAlt'
 import { Apps, Mic } from '@mui/icons-material'
 import { useStatusStore } from '../store'
+import { forceSwitch } from '../ipc'
 
 const pages = [{ name: 'Most Explorer', url: 'MostExplorer' }]
 interface Props {
@@ -33,7 +36,8 @@ const ResponsiveAppBar: React.FC<Props> = ({ colorMode }) => {
     setSourceOpen,
     setSettingsOpen,
     settingsOpen,
-    appStatus
+    appStatus,
+    setFirmwareOpen
   ] = useStatusStore((state) => [
     state.open,
     state.setOpen,
@@ -44,7 +48,8 @@ const ResponsiveAppBar: React.FC<Props> = ({ colorMode }) => {
     state.setSourceOpen,
     state.setSettingsOpen,
     state.settingsOpen,
-    state.appStatus
+    state.appStatus,
+    state.setFirmwareOpen
   ])
   const nav = useNavigate()
   const theme = useTheme()
@@ -69,6 +74,16 @@ const ResponsiveAppBar: React.FC<Props> = ({ colorMode }) => {
           <Box>
             <IconButton
               sx={{ ml: 1 }}
+              onClick={(): void => setFirmwareOpen(true)}
+              color="inherit"
+              // disabled={appStatus < 3 ? true : false}
+            >
+              <SystemUpdateAltIcon />
+            </IconButton>
+          </Box>
+          <Box>
+            <IconButton
+              sx={{ ml: 1 }}
               onClick={(): void => setRetrieveAudioModal(!retrieveAudioModal)}
               color="inherit"
               disabled={appStatus < 3 ? true : false}
@@ -89,6 +104,16 @@ const ResponsiveAppBar: React.FC<Props> = ({ colorMode }) => {
               disabled={appStatus < 3 ? true : false}
             >
               <SendIcon />
+            </IconButton>
+          </Box>
+          <Box>
+            <IconButton
+              sx={{ ml: 1 }}
+              onClick={(): void => forceSwitch()}
+              color="inherit"
+              disabled={appStatus < 3 ? true : false}
+            >
+              <AudiotrackIcon />
             </IconButton>
           </Box>
           <Box>
