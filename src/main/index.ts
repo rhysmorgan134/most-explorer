@@ -56,7 +56,6 @@ const checkConfigVersion = (
 let config: Settings
 
 const configPath = app.getPath('userData') + path.sep + 'config.json'
-console.log('Settings path: ' + configPath)
 if (fs.existsSync(configPath)) {
   config = JSON.parse(fs.readFileSync(configPath).toString())
   config = checkConfigVersion(config, DEFAULT_CONFIG, configPath)
@@ -66,6 +65,12 @@ if (fs.existsSync(configPath)) {
   config = DEFAULT_CONFIG
   fs.writeFileSync(configPath, JSON.stringify(config))
 }
+
+if (config?.usbSettings) {
+  delete config.usbSettings
+  fs.writeFileSync(configPath, JSON.stringify(config))
+}
+
 function createWindow(): void {
   // Create the browser window.
   mainWindow = new BrowserWindow({
@@ -166,6 +171,8 @@ app.whenReady().then(() => {
   ipcMain.handle('saveSettings', saveSettings)
   ipcMain.handle('bootToDFU', bootToDFU)
   ipcMain.handle('forceSwitch', forceSwitch)
+  ipcMain.handle('getUsbSettings', getUsbSettings)
+  ipcMain.handle('sendToDongle', sendToDongle)
 })
 
 const getRegistry = (): void => {
@@ -218,20 +225,22 @@ const getAppStatus = (): void => {
   mainWindow?.webContents.send('appStatus', most!.appState)
 }
 
+const getUsbSettings = (): void => {
+  most?.getSettings()
+}
+
 const getSettings = (): void => {
   mainWindow?.webContents.send('settingsUpdate', config)
 }
 
+const sendToDongle = (_send, settings: Settings): void => {
+  most!.saveSettings(settings)
+}
+
 const saveSettings = (_send, settings: Settings): void => {
+  console.log('saving settings: ', settings)
   const configPath = app.getPath('userData') + path.sep + 'config.json'
-  console.log('saving config')
   fs.writeFileSync(configPath, JSON.stringify(settings))
-  if (config.usb) {
-    if ((_.isEqual(most!.settings), settings)) {
-      console.log(settings.usbSettings)
-      most!.saveSettings(settings.usbSettings)
-    }
-  }
   if (config.usb != settings.usb) {
     app.relaunch()
     app.exit()

@@ -36,6 +36,7 @@ export class UsbMost extends EventEmitter {
     this.updateAppState(this.appState)
     //this.audio = new JlrAudioControl(this.socketMost)
     this.socketMost.on('opened', () => {
+      console.log('opened')
       this.updateAppState(AppState.connectingToSocket)
       setTimeout(() => {
         this.socketMost.getSettings()
@@ -70,7 +71,6 @@ export class UsbMost extends EventEmitter {
     })
 
     this.socketMost.on(Os8104Events.Settings, (message: UsbSettings) => {
-      console.log('update in interface', message)
       this.settings = message
       this.win?.webContents.send('usbSettings', message)
     })
@@ -143,5 +143,9 @@ export class UsbMost extends EventEmitter {
   bootToDFU(): void {
     console.log('booting to dfu')
     this.socketMost.bootToDFU()
+  }
+
+  getSettings(): void {
+    this.socketMost.getSettings()
   }
 }

@@ -2,7 +2,8 @@ import {
   RetrieveAudio,
   SocketMostSendMessage,
   Source,
-  Stream
+  Stream,
+  UsbSettings
 } from 'socketmost/dist/modules/Messages'
 import { SourceRecord } from '../../main/parsers/JlrTouch'
 import { Settings } from '../../main/Types'
@@ -36,12 +37,6 @@ export const getAppState = (): void => {
 }
 
 export const saveSettings = (settings: Settings): void => {
-  settings.usbSettings.customShutdownMessage = {
-    data: [4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
-    fblockId: 1,
-    fktId: 2,
-    optype: 3
-  }
   window['most'].saveSettings(settings)
 }
 
@@ -70,4 +65,12 @@ export const bootToDFU = (): void => {
 
 export const forceSwitch = (): void => {
   window['most'].forceSwitch()
+}
+
+export const getUsbSettings = (): void => {
+  window['most'].getUsbSettings()
+}
+
+export const sendToDongle = (settings: UsbSettings): void => {
+  window['most'].sendToDongle(settings)
 }

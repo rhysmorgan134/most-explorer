@@ -40,7 +40,9 @@ if (process.contextIsolated) {
       saveSettings: (settings: Settings) => ipcRenderer.invoke('saveSettings', settings),
       usbSettings: (settings: UsbSettings) => ipcRenderer.on('usbSettings', settings),
       bootToDFU: () => ipcRenderer.invoke('bootToDFU'),
-      forceSwitch: () => ipcRenderer.invoke('forceSwitch')
+      forceSwitch: () => ipcRenderer.invoke('forceSwitch'),
+      getUsbSettings: () => ipcRenderer.invoke('getUsbSettings'),
+      sendToDongle: (settings: UsbSettings) => ipcRenderer.invoke('sendToDongle', settings)
     })
   } catch (error) {
     console.error(error)

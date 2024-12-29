@@ -162,4 +162,8 @@ export class Most extends EventEmitter {
   bootToDFU = (): void => {
     console.log('boot to dfu not available in HAT version')
   }
+
+  getSettings(): void {
+    console.log('get settings not available in HAT version')
+  }
 }

@@ -8,6 +8,7 @@ import {
   UsbSettings
 } from 'socketmost/dist/modules/Messages'
 import { Settings } from '../../main/Types'
+import usbSettings from './components/UsbSettings'
 
 export interface NetworkStore {
   registry: Registry
@@ -56,6 +57,9 @@ export interface MostSettings {
   usb: boolean
   manualIp: boolean
   ip: string
+}
+
+export interface UsbSettingsStore {
   usbSettings: UsbSettings
 }
 
@@ -122,7 +126,18 @@ export const useLogStore = create<LogStore>()((set) => ({
 export const useMostSettings = create<MostSettings>()((set) => ({
   usb: false,
   manualIp: false,
-  ip: '',
+  ip: ''
+}))
+
+export const useMessageStore = create<MessageStore>((set) => ({
+  messages: [],
+  filter: '',
+  setFilter: (data): void => {
+    set(() => ({ filter: data }))
+  }
+}))
+
+export const useUsbSettings = create<UsbSettingsStore>((set) => ({
   usbSettings: {
     version: '',
     standalone: false,
@@ -158,14 +173,6 @@ export const useMostSettings = create<MostSettings>()((set) => ({
       instanceId: 0,
       sinkNumber: 0
     }
-  }
-}))
-
-export const useMessageStore = create<MessageStore>((set) => ({
-  messages: [],
-  filter: '',
-  setFilter: (data): void => {
-    set(() => ({ filter: data }))
   }
 }))
 
@@ -224,6 +231,5 @@ window['most'].settingsUpdate((_event, value: Partial<MostSettings>) => {
 })
 
 window['most'].usbSettings((_event, value: UsbSettings) => {
-  useMostSettings.setState(() => ({ usbSettings: value }))
-  console.log(useMostSettings.getState())
+  useUsbSettings.setState(() => ({ usbSettings: value }))
 })

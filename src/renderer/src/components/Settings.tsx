@@ -13,36 +13,7 @@ const Settings: React.FC<Props> = () => {
   const [actualSettings, setActualSettings] = useState({
     usb: false,
     ip: '',
-    manualIp: false,
-    usbSettings: {
-      version: '',
-      standalone: false,
-      autoShutdown: false,
-      customShutdown: false,
-      auxPower: false,
-      forty8Khz: false,
-      spare3: false,
-      spare4: false,
-      spare5: false,
-      nodeAddressHigh: 0,
-      nodeAddressLow: 0,
-      groupAddress: 0,
-      shutdownTimeDelay: 0,
-      startupTimeDelay: 0,
-      customShutdownMessage: {
-        fblockId: 0,
-        fktId: 0,
-        optype: 0,
-        data: []
-      },
-      amplifier: {
-        fblockId: 0,
-        targetAddressHigh: 0,
-        targetAddressLow: 0,
-        instanceId: 0,
-        sinkNumber: 0
-      }
-    }
+    manualIp: false
   })
 
   useEffect(() => {
@@ -55,9 +26,17 @@ const Settings: React.FC<Props> = () => {
 
   const setUsb = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.value === 'true') {
-      setActualSettings({ ...actualSettings, usb: true, manualIp: false })
+      setActualSettings((prev) => {
+        let newState = { ...prev, usb: true, manualIp: false }
+        saveSettings(newState)
+        return newState
+      })
     } else {
-      setActualSettings({ ...actualSettings, usb: false, manualIp: true })
+      setActualSettings((prev) => {
+        let newState = { ...prev, usb: false, manualIp: true }
+        saveSettings(newState)
+        return newState
+      })
     }
   }
   //we.tl/t-jqcGhBRmi3
@@ -65,7 +44,6 @@ const Settings: React.FC<Props> = () => {
     setActualSettings({ ...actualSettings, manualIp: event.target.checked })
   }
 
-  console.log('settings in view', actualSettings)
   return (
     <Grid container spacing={2} sx={{ minHeight: '80%' }}>
       <Grid xs={12} sx={{ display: 'flex', justifyContent: 'center' }}>
@@ -82,7 +60,7 @@ const Settings: React.FC<Props> = () => {
       </Grid>
 
       {actualSettings.usb ? (
-        <UsbSettingsPage actualSettings={actualSettings} setActualSettings={setActualSettings} />
+        <></>
       ) : (
         <>
           <Grid xs={4} sx={{ display: 'flex', justifyContent: 'center' }}>
@@ -114,12 +92,13 @@ const Settings: React.FC<Props> = () => {
           )}
         </>
       )}
-
-      <Grid xs={12} sx={{ display: 'flex', justifyContent: 'center' }}>
-        <Button variant="contained" onClick={(): void => saveSettings(actualSettings)}>
-          SAVE
-        </Button>
-      </Grid>
+      {actualSettings.usb ? (
+        <Grid container xs={12} sx={{ justifyContent: 'center' }}>
+          <UsbSettingsPage />
+        </Grid>
+      ) : (
+        <></>
+      )}
     </Grid>
   )
 }

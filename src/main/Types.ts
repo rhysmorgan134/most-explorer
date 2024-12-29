@@ -14,5 +14,5 @@ export interface Settings {
   usb: boolean
   manualIp: boolean
   ip: string
-  usbSettings: UsbSettings
+  usbSettings?: UsbSettings
 }
