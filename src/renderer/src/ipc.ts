@@ -74,3 +74,7 @@ export const getUsbSettings = (): void => {
 export const sendToDongle = (settings: UsbSettings): void => {
   window['most'].sendToDongle(settings)
 }
+
+export const getAllDebugInfo = (): void => {
+  window['most'].getAllDebugInfo()
+}

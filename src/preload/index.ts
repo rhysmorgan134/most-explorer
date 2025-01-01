@@ -42,7 +42,8 @@ if (process.contextIsolated) {
       bootToDFU: () => ipcRenderer.invoke('bootToDFU'),
       forceSwitch: () => ipcRenderer.invoke('forceSwitch'),
       getUsbSettings: () => ipcRenderer.invoke('getUsbSettings'),
-      sendToDongle: (settings: UsbSettings) => ipcRenderer.invoke('sendToDongle', settings)
+      sendToDongle: (settings: UsbSettings) => ipcRenderer.invoke('sendToDongle', settings),
+      getAllDebugInfo: () => ipcRenderer.invoke('getAllDebugInfo')
     })
   } catch (error) {
     console.error(error)

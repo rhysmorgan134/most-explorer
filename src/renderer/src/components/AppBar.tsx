@@ -16,8 +16,10 @@ import AudiotrackIcon from '@mui/icons-material/Audiotrack'
 import SettingsIcon from '@mui/icons-material/Settings'
 import SystemUpdateAltIcon from '@mui/icons-material/SystemUpdateAlt'
 import { Apps, Mic } from '@mui/icons-material'
+import BugReportIcon from '@mui/icons-material/BugReport'
 import { useStatusStore } from '../store'
-import { forceSwitch } from '../ipc'
+import { forceSwitch, getAllDebugInfo } from '../ipc'
+import { Tooltip } from '@mui/material'
 
 const pages = [{ name: 'Most Explorer', url: 'MostExplorer' }]
 interface Props {
@@ -82,6 +84,18 @@ const ResponsiveAppBar: React.FC<Props> = ({ colorMode }) => {
             </IconButton>
           </Box>
           <Box>
+            <Tooltip title="Debug">
+              <IconButton
+                sx={{ ml: 1 }}
+                onClick={(): void => getAllDebugInfo()}
+                color="inherit"
+                disabled={appStatus < 3 ? true : false}
+              >
+                <BugReportIcon />
+              </IconButton>
+            </Tooltip>
+          </Box>
+          <Box>
             <IconButton
               sx={{ ml: 1 }}
               onClick={(): void => setRetrieveAudioModal(!retrieveAudioModal)}
@@ -107,14 +121,16 @@ const ResponsiveAppBar: React.FC<Props> = ({ colorMode }) => {
             </IconButton>
           </Box>
           <Box>
-            <IconButton
-              sx={{ ml: 1 }}
-              onClick={(): void => forceSwitch()}
-              color="inherit"
-              disabled={appStatus < 3 ? true : false}
-            >
-              <AudiotrackIcon />
-            </IconButton>
+            <Tooltip title="Force switch">
+              <IconButton
+                sx={{ ml: 1 }}
+                onClick={(): void => forceSwitch()}
+                color="inherit"
+                disabled={appStatus < 3 ? true : false}
+              >
+                <AudiotrackIcon />
+              </IconButton>
+            </Tooltip>
           </Box>
           <Box>
             <IconButton

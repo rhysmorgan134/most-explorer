@@ -173,6 +173,7 @@ app.whenReady().then(() => {
   ipcMain.handle('forceSwitch', forceSwitch)
   ipcMain.handle('getUsbSettings', getUsbSettings)
   ipcMain.handle('sendToDongle', sendToDongle)
+  ipcMain.handle('getAllDebugInfo', getAllDebugInfo)
 })
 
 const getRegistry = (): void => {
@@ -235,6 +236,10 @@ const getSettings = (): void => {
 
 const sendToDongle = (_send, settings: Settings): void => {
   most!.saveSettings(settings)
+}
+
+const getAllDebugInfo = (): void => {
+  most!.getAllDebugInfo()
 }
 
 const saveSettings = (_send, settings: Settings): void => {

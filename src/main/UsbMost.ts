@@ -148,4 +148,8 @@ export class UsbMost extends EventEmitter {
   getSettings(): void {
     this.socketMost.getSettings()
   }
+
+  getAllDebugInfo(): void {
+    this.socketMost.getAllDebugInfo()
+  }
 }

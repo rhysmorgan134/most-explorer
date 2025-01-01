@@ -166,4 +166,8 @@ export class Most extends EventEmitter {
   getSettings(): void {
     console.log('get settings not available in HAT version')
   }
+
+  getAllDebugInfo(): void {
+    console.log('debug info not available in HAT version yet.....')
+  }
 }
