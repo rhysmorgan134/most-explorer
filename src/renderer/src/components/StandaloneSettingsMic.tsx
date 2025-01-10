@@ -25,7 +25,7 @@ const StandaloneSettingsMic: React.FC<Props> = ({ microphoneSettings, setMicroph
     setMicrophoneSettings(preDefinedMicrophones[event.target.value as string])
   }
 
-  console.log('amplifier settings in view', microphoneSettings)
+  console.log('microphone settings in view', microphoneSettings)
   return (
     <Grid xs={12} sx={{ display: 'flex', justifyContent: 'center', flexWrap: 'wrap' }}>
       <Grid xs={12}>Microphone</Grid>

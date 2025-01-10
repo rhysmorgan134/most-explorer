@@ -50,6 +50,7 @@ const UsbSettingsPage: React.FC = () => {
   }
 
   const setMicrophoneSettings = (settings) => {
+    console.log('setting microphone', settings)
     setTempSettings({
       ...tempSettings,
       microphone: settings

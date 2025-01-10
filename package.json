@@ -37,7 +37,7 @@
     "react-router-dom": "^6.16.0",
     "react-window-ui": "^2.2.0",
     "socket.io-client": "^4.7.2",
-    "socketmost": "^3.0.1-alpha.86",
+    "socketmost": "^3.0.1-alpha.87",
     "stm32dfu": "^0.2.0",
     "zustand": "^4.4.1"
   },
