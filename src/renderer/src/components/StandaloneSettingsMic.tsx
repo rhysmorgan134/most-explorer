@@ -52,7 +52,7 @@ const StandaloneSettingsMic: React.FC<Props> = ({ microphoneSettings, setMicroph
           type={'Number'}
           value={microphoneSettings.fblockId}
           onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-            setMicrophoneSettings({ fblockId: parseInt(event.target.value) })
+            setMicrophoneSettings({ ...microphoneSettings, fblockId: parseInt(event.target.value) })
           }}
         />
       </Grid>
@@ -62,7 +62,10 @@ const StandaloneSettingsMic: React.FC<Props> = ({ microphoneSettings, setMicroph
           type={'Number'}
           value={microphoneSettings.targetAddressHigh}
           onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-            setMicrophoneSettings({ targetAddressHigh: parseInt(event.target.value) })
+            setMicrophoneSettings({
+              ...microphoneSettings,
+              targetAddressHigh: parseInt(event.target.value)
+            })
           }}
         />
       </Grid>
@@ -72,7 +75,10 @@ const StandaloneSettingsMic: React.FC<Props> = ({ microphoneSettings, setMicroph
           type={'Number'}
           value={microphoneSettings.targetAddressLow}
           onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-            setMicrophoneSettings({ targetAddressLow: parseInt(event.target.value) })
+            setMicrophoneSettings({
+              ...microphoneSettings,
+              targetAddressLow: parseInt(event.target.value)
+            })
           }}
         />
       </Grid>
@@ -82,7 +88,10 @@ const StandaloneSettingsMic: React.FC<Props> = ({ microphoneSettings, setMicroph
           type={'Number'}
           value={microphoneSettings.instanceId}
           onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-            setMicrophoneSettings({ instanceId: parseInt(event.target.value) })
+            setMicrophoneSettings({
+              ...microphoneSettings,
+              instanceId: parseInt(event.target.value)
+            })
           }}
         />
       </Grid>
@@ -92,7 +101,10 @@ const StandaloneSettingsMic: React.FC<Props> = ({ microphoneSettings, setMicroph
           type={'Number'}
           value={microphoneSettings.sinkNumber}
           onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-            setMicrophoneSettings({ sinkNumber: parseInt(event.target.value) })
+            setMicrophoneSettings({
+              ...microphoneSettings,
+              sinkNumber: parseInt(event.target.value)
+            })
           }}
         />
       </Grid>

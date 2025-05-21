@@ -52,7 +52,7 @@ const StandaloneSettings: React.FC<Props> = ({ amplifierSettings, setAmplifierSe
           type={'Number'}
           value={amplifierSettings.fblockId}
           onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-            setAmplifierSettings({ fblockId: parseInt(event.target.value) })
+            setAmplifierSettings({ ...amplifierSettings, fblockId: parseInt(event.target.value) })
           }}
         />
       </Grid>
@@ -62,7 +62,10 @@ const StandaloneSettings: React.FC<Props> = ({ amplifierSettings, setAmplifierSe
           type={'Number'}
           value={amplifierSettings.targetAddressHigh}
           onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-            setAmplifierSettings({ targetAddressHigh: parseInt(event.target.value) })
+            setAmplifierSettings({
+              ...amplifierSettings,
+              targetAddressHigh: parseInt(event.target.value)
+            })
           }}
         />
       </Grid>
@@ -72,7 +75,10 @@ const StandaloneSettings: React.FC<Props> = ({ amplifierSettings, setAmplifierSe
           type={'Number'}
           value={amplifierSettings.targetAddressLow}
           onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-            setAmplifierSettings({ targetAddressLow: parseInt(event.target.value) })
+            setAmplifierSettings({
+              ...amplifierSettings,
+              targetAddressLow: parseInt(event.target.value)
+            })
           }}
         />
       </Grid>
@@ -82,7 +88,7 @@ const StandaloneSettings: React.FC<Props> = ({ amplifierSettings, setAmplifierSe
           type={'Number'}
           value={amplifierSettings.instanceId}
           onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-            setAmplifierSettings({ instanceId: parseInt(event.target.value) })
+            setAmplifierSettings({ ...amplifierSettings, instanceId: parseInt(event.target.value) })
           }}
         />
       </Grid>
@@ -92,7 +98,7 @@ const StandaloneSettings: React.FC<Props> = ({ amplifierSettings, setAmplifierSe
           type={'Number'}
           value={amplifierSettings.sinkNumber}
           onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-            setAmplifierSettings({ sinkNumber: parseInt(event.target.value) })
+            setAmplifierSettings({ ...amplifierSettings, sinkNumber: parseInt(event.target.value) })
           }}
         />
       </Grid>

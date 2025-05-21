@@ -39,10 +39,13 @@ const UsbSettingsPage: React.FC = () => {
       ...tempSettings,
       [key]: parseInt(value)
     })
+    console.log(tempSettings)
   }
   //we.tl/t-jqcGhBRmi3
 
   const setAmplifierSettings = (settings) => {
+    console.log(tempSettings)
+    console.log(settings)
     setTempSettings({
       ...tempSettings,
       amplifier: settings
