@@ -65,7 +65,7 @@ const Firmware: React.FC = () => {
         versions: release.assets.map((e) => {
           return {
             name: e.name,
-            url: 'https://corsproxy.io/?key=9e10e178&url=' + e.browser_download_url
+            url: 'https://api.cors.lol/?url=' + e.browser_download_url
           }
         })
       }
@@ -84,10 +84,13 @@ const Firmware: React.FC = () => {
   }
 
   const startUpdate = async () => {
-    const response = await fetch(selectedVersion)
+    const response = await fetch(selectedVersion, { mode: 'cors' })
+    console.log(selectedVersion)
     if (!response.ok) {
+      console.log(response)
       throw 'Error: ' + response.status + ' ' + response.statusText
     }
+    console.log(response)
     const fileArr = await response.arrayBuffer()
     console.log(fileArr)
     try {
