@@ -11,8 +11,15 @@ import Brightness4Icon from '@mui/icons-material/Brightness4'
 import Brightness7Icon from '@mui/icons-material/Brightness7'
 import MenuIcon from '@mui/icons-material/Menu'
 import SendIcon from '@mui/icons-material/Send'
-import { Apps, Mic } from "@mui/icons-material";
+import InputIcon from '@mui/icons-material/Input'
+import AudiotrackIcon from '@mui/icons-material/Audiotrack'
+import SettingsIcon from '@mui/icons-material/Settings'
+import SystemUpdateAltIcon from '@mui/icons-material/SystemUpdateAlt'
+import { Apps, Mic } from '@mui/icons-material'
+import BugReportIcon from '@mui/icons-material/BugReport'
 import { useStatusStore } from '../store'
+import { forceSwitch, getAllDebugInfo } from '../ipc'
+import { Tooltip } from '@mui/material'
 
 const pages = [{ name: 'Most Explorer', url: 'MostExplorer' }]
 interface Props {
@@ -21,7 +28,31 @@ interface Props {
   }
 }
 const ResponsiveAppBar: React.FC<Props> = ({ colorMode }) => {
-  const [open, setOpen, retrieveAudioModal, setRetrieveAudioModal, setManualAll] = useStatusStore((state) => [state.open, state.setOpen, state.retrieveAudioModal, state.setRetrieveAudioModal, state.setManualAll])
+  const [
+    open,
+    setOpen,
+    retrieveAudioModal,
+    setRetrieveAudioModal,
+    setManualAll,
+    sourceOpen,
+    setSourceOpen,
+    setSettingsOpen,
+    settingsOpen,
+    appStatus,
+    setFirmwareOpen
+  ] = useStatusStore((state) => [
+    state.open,
+    state.setOpen,
+    state.retrieveAudioModal,
+    state.setRetrieveAudioModal,
+    state.setManualAll,
+    state.sourceOpen,
+    state.setSourceOpen,
+    state.setSettingsOpen,
+    state.settingsOpen,
+    state.appStatus,
+    state.setFirmwareOpen
+  ])
   const nav = useNavigate()
   const theme = useTheme()
 
@@ -43,22 +74,72 @@ const ResponsiveAppBar: React.FC<Props> = ({ colorMode }) => {
             ))}
           </Box>
           <Box>
-            <IconButton sx={{ ml: 1 }} onClick={(): void => setRetrieveAudioModal(!retrieveAudioModal)} color="inherit">
+            <IconButton
+              sx={{ ml: 1 }}
+              onClick={(): void => setFirmwareOpen(true)}
+              color="inherit"
+              // disabled={appStatus < 3 ? true : false}
+            >
+              <SystemUpdateAltIcon />
+            </IconButton>
+          </Box>
+          <Box>
+            <Tooltip title="Debug">
+              <IconButton
+                sx={{ ml: 1 }}
+                onClick={(): void => getAllDebugInfo()}
+                color="inherit"
+                disabled={appStatus < 3 ? true : false}
+              >
+                <BugReportIcon />
+              </IconButton>
+            </Tooltip>
+          </Box>
+          <Box>
+            <IconButton
+              sx={{ ml: 1 }}
+              onClick={(): void => setRetrieveAudioModal(!retrieveAudioModal)}
+              color="inherit"
+              disabled={appStatus < 3 ? true : false}
+            >
               <Mic />
             </IconButton>
           </Box>
           <Box>
-            <Apps fontSize={'large'} onClick={(): void => nav('/Launcher')} />
-          </Box>
-          <Box>
-            {theme.palette.mode} mode
-            <IconButton sx={{ ml: 1 }} onClick={colorMode.toggleColorMode} color="inherit">
-              {theme.palette.mode === 'dark' ? <Brightness7Icon /> : <Brightness4Icon />}
+            <IconButton sx={{ ml: 1 }} onClick={(): void => setSettingsOpen(true)} color="inherit">
+              <SettingsIcon />
             </IconButton>
           </Box>
           <Box>
-            <IconButton sx={{ ml: 1 }} onClick={(): void => setManualAll(true)} color="inherit">
+            <IconButton
+              sx={{ ml: 1 }}
+              onClick={(): void => setManualAll(true)}
+              color="inherit"
+              disabled={appStatus < 3 ? true : false}
+            >
               <SendIcon />
+            </IconButton>
+          </Box>
+          <Box>
+            <Tooltip title="Force switch">
+              <IconButton
+                sx={{ ml: 1 }}
+                onClick={(): void => forceSwitch()}
+                color="inherit"
+                disabled={appStatus < 3 ? true : false}
+              >
+                <AudiotrackIcon />
+              </IconButton>
+            </Tooltip>
+          </Box>
+          <Box>
+            <IconButton
+              sx={{ ml: 1 }}
+              onClick={(): void => setSourceOpen(!sourceOpen)}
+              color="inherit"
+              disabled={appStatus < 3 ? true : false}
+            >
+              <InputIcon />
             </IconButton>
           </Box>
           <Box>

@@ -21,7 +21,7 @@ export class Parser extends EventEmitter {
   }
 
   parseMessage(data: SocketMostMessageRx, fkt: number): void {
-    console.log("parsing message", data)
+    console.log('parsing message', data)
     if (data.telID === 1) {
       this.registry = {}
       this.dataType = fkt
@@ -43,7 +43,7 @@ export class Parser extends EventEmitter {
       this.messageInProg = false
       switch (this.dataType) {
         case 2561:
-          console.log("found registry")
+          console.log('found registry')
           this.parseRegistry()
           break
         case 0:
@@ -59,7 +59,6 @@ export class Parser extends EventEmitter {
       this.messageInProg = false
       console.log(this.dataType)
       switch (this.dataType) {
-
         case 2561:
           this.parseRegistry()
           break
@@ -77,24 +76,28 @@ export class Parser extends EventEmitter {
   }
 
   protected parseRegistry(): void {
-    console.log("parsing registry")
-    for (let i = 0; i < this.finalData!.length; i += 4) {
-      const tempFblockID = this.finalData!.readUInt8(i + 2)
-      const readableName = tempFblockID in fBlocks ? fBlocks[tempFblockID] : tempFblockID
-      if (!(readableName in this.registry)) {
-        this.registry[readableName] = []
+    try {
+      console.log('parsing registry')
+      for (let i = 0; i < this.finalData!.length; i += 4) {
+        const tempFblockID = this.finalData!.readUInt8(i + 2)
+        const readableName = tempFblockID in fBlocks ? fBlocks[tempFblockID] : tempFblockID
+        if (!(readableName in this.registry)) {
+          this.registry[readableName] = []
+        }
+        this.registry[readableName].push({
+          address: this.finalData!.readUint16BE(i),
+          instanceID: this.finalData!.readUInt8(i + 3),
+          fBlockID: tempFblockID
+        })
       }
-      this.registry[readableName].push({
-        address: this.finalData!.readUint16BE(i),
-        instanceID: this.finalData!.readUInt8(i + 3),
-        fBlockID: tempFblockID
-      })
+      this.emit('registryComplete', this.registry)
+    } catch {
+      console.log('message sequence error')
     }
-    this.emit('registryComplete', this.registry)
   }
 
   parseFktIDs(): void {
-    console.log("parsing fkts", this.finalData)
+    console.log('parsing fkts', this.finalData)
     const functions: string[] = []
     for (let i = 0; i < this.finalData!.length - 1; i += 3) {
       functions.push((this.finalData!.readUint16BE(i) >> 4).toString(16))

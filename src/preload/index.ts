@@ -1,6 +1,14 @@
-import { contextBridge, ipcRenderer } from "electron";
+import { contextBridge, ipcRenderer } from 'electron'
 import { electronAPI } from '@electron-toolkit/preload'
-import { RetrieveAudio, SocketMostSendMessage, Source, Stream } from "socketmost/dist/modules/Messages";
+import {
+  RetrieveAudio,
+  SocketMostSendMessage,
+  Source,
+  Stream,
+  UsbSettings
+} from 'socketmost/dist/modules/Messages'
+import { SourceRecord } from '../main/parsers/JlrTouch'
+import { Settings } from '../main/Types'
 
 // Custom APIs for renderer
 const api = {}
@@ -23,8 +31,19 @@ if (process.contextIsolated) {
       allocate: () => ipcRenderer.invoke('allocate'),
       stream: (data: Stream) => ipcRenderer.invoke('stream', data),
       retrieveAudio: (data: RetrieveAudio) => ipcRenderer.invoke('retrieveAudio', data),
+      getAppState: (data: RetrieveAudio) => ipcRenderer.invoke('getAppState', data),
       connectSource: (data: Source) => ipcRenderer.invoke('connectSource', data),
-      disconnectSource: (data: Source) => ipcRenderer.invoke('disconnectSource', data)
+      disconnectSource: (data: Source) => ipcRenderer.invoke('disconnectSource', data),
+      switchSource: (data: SourceRecord) => ipcRenderer.invoke('switchSource', data),
+      settingsUpdate: (callback) => ipcRenderer.on('settingsUpdate', callback),
+      getSettings: () => ipcRenderer.invoke('getSettings'),
+      saveSettings: (settings: Settings) => ipcRenderer.invoke('saveSettings', settings),
+      usbSettings: (settings: UsbSettings) => ipcRenderer.on('usbSettings', settings),
+      bootToDFU: () => ipcRenderer.invoke('bootToDFU'),
+      forceSwitch: () => ipcRenderer.invoke('forceSwitch'),
+      getUsbSettings: () => ipcRenderer.invoke('getUsbSettings'),
+      sendToDongle: (settings: UsbSettings) => ipcRenderer.invoke('sendToDongle', settings),
+      getAllDebugInfo: () => ipcRenderer.invoke('getAllDebugInfo')
     })
   } catch (error) {
     console.error(error)

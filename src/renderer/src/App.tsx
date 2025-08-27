@@ -1,7 +1,7 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import ResponsiveAppBar from './components/AppBar'
 import { Routes, Route } from 'react-router-dom'
-import { useTheme } from '@mui/material'
+import { Dialog, DialogContent, useTheme } from '@mui/material'
 import Home from './components/Home'
 import '@fontsource/roboto/300.css'
 import '@fontsource/roboto/400.css'
@@ -13,7 +13,10 @@ import { useNetworkStore, useStatusStore } from './store'
 import CssBaseline from '@mui/material/CssBaseline'
 import Starting from './components/Starting'
 import PersistentDrawerLeft from './components/Drawer'
-import { Registry } from "../../resources/GlobalTypes";
+import { Registry } from '../../resources/GlobalTypes'
+import { getAppState, reqSettings } from './ipc'
+import Settings from './components/Settings'
+import Firmware from './components/Firmware'
 
 const ColorModeContext = React.createContext({ toggleColorMode: () => {} })
 
@@ -33,6 +36,12 @@ export default function App(): JSX.Element {
   const [mode, setMode] = React.useState('dark')
   const appStatus = useStatusStore((state) => state['appStatus'])
   const registry: Registry = useNetworkStore((state) => state['registry'])
+  const [settingsOpen, setSettingsOpen, firmwareOpen, setFirmwareOpen] = useStatusStore((state) => [
+    state.settingsOpen,
+    state.setSettingsOpen,
+    state.firmwareOpen,
+    state.setFirmwareOpen
+  ])
   const colorMode = React.useMemo(
     () => ({
       toggleColorMode: (): void => {
@@ -41,6 +50,11 @@ export default function App(): JSX.Element {
     }),
     []
   )
+
+  useEffect(() => {
+    getAppState()
+    reqSettings()
+  }, [])
 
   const theme = React.useMemo(
     () =>
@@ -101,6 +115,32 @@ export default function App(): JSX.Element {
             )}
           </Box>
         </Box>
+        <Dialog
+          open={settingsOpen}
+          onClose={(): void => {
+            setSettingsOpen(false)
+          }}
+          maxWidth={'lg'}
+          fullWidth={true}
+          sx={{ minHeight: '50%' }}
+        >
+          <DialogContent>
+            <Settings />
+          </DialogContent>
+        </Dialog>
+        <Dialog
+          open={firmwareOpen}
+          onClose={(): void => {
+            setFirmwareOpen(false)
+          }}
+          maxWidth={'lg'}
+          fullWidth={true}
+          sx={{ minHeight: '50%' }}
+        >
+          <DialogContent>
+            <Firmware />
+          </DialogContent>
+        </Dialog>
       </ThemeProvider>
     </ColorModeContext.Provider>
   )
